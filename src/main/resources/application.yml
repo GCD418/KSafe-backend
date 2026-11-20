@@ -1,0 +1,45 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: ksafe-backend
+
+  # =========================================================================
+  # CONFIGURACIÓN DE BASE DE DATOS POSTGRESQL (LOCAL Y NEON DB)
+  # =========================================================================
+  # Por defecto apunta a desarrollo local: jdbc:postgresql://localhost:5432/biometric_db
+  #
+  # Para conectar a Neon (https://neon.tech), puedes definir las variables de entorno
+  # o reemplazar los valores por defecto con los datos de tu proyecto en Neon:
+  #   DB_URL: jdbc:postgresql://<tu-endpoint>.<region>.aws.neon.tech/<tu-db>?sslmode=require
+  #   DB_USERNAME: <tu-usuario-neon>
+  #   DB_PASSWORD: <tu-password-neon>
+  # =========================================================================
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/biometric_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      idle-timeout: 30000
+      connection-timeout: 20000
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+security:
+  jwt:
+    # Clave secreta HMAC-SHA256 (mínimo 256 bits / 32 caracteres)
+    secret: ${JWT_SECRET:ksafe-biometric-auth-super-secret-signing-key-2026-neon-kmp}
+    enrollment-expiration-minutes: 5
+    access-expiration-minutes: 15
+    refresh-expiration-days: 30
